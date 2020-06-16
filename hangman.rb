@@ -1,8 +1,10 @@
+require "yaml"
+
 class Hangman
   def initialize
     @rand_word = get_random_word
     @guessed = []
-    @display = "_ "*rand_word.length
+    @display = "_ "*@rand_word.length
   end
 
   def get_random_word 
@@ -12,7 +14,7 @@ class Hangman
       words.push(word.chomp)
     end
   
-    rand_word = words[Random.rand(words.length)]
+    words[Random.rand(words.length)]
   end
   
   def make_guess(guess)
@@ -34,9 +36,13 @@ class Hangman
       guess = gets.chomp
     
       if guess.downcase == "save"
-        # save game
+        Dir.mkdir("temp") if !Dir.exist?("temp")
+        File.open("temp/save.yaml", "w") do |file|
+          file.puts YAML::dump(self)
+        end
+        puts "Game saved"
       elsif guess.length == 1
-        make_guess(gets.chomp)
+        make_guess(guess)
       else
         puts "\n\n\nInvalid guess length"
       end
@@ -48,4 +54,29 @@ class Hangman
       puts "#{@display}\n\nYOU WIN"
     end
   end
+
+  def to_s
+    "Word: #{@rand_word}\nGuessed words: #{@guessed}\nDisplay: #{@display}"
+  end
+end
+
+puts "Would you like to \n\t1. [load] a save\n\t2. start a [new] game"
+response = gets.chomp
+game = nil
+if response == "load"
+  if File.exist?("temp/save.yaml")
+    File.open("temp/save.yaml", "r") do |object|
+      game = YAML::load(object)
+    end
+  else
+    puts "No save found, Starting new game"
+    game = Hangman.new
+  end
+else
+  puts "Not sure what that means... Starting a new game"
+  game = Hangman.new
+end
+
+if game != nil
+  game.play
 end
