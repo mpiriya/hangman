@@ -31,8 +31,11 @@ class Hangman
   end
 
   def play
+  man_drawing = ["\n\n\n\n\n", "      ()\n\n\n\n", "      ()\n      @@\n\n\n", "      ()\n     /@@\n\n\n",
+                 "      ()\n     /@@\\\n\n\n", "      ()\n     /@@\\\n      /\n\n",
+                 "      ()\n     /@@\\\n      /\\\n\n"]
     until @guessed.length == 6 || @display.index("_") == nil do
-      puts "\n\n\n\n\n#{@display}\nLetters guessed incorrectly: #{@guessed.join(" ")}\nGuesses remaining: #{6-@guessed.length}\nGuess a letter OR type 'save' to save your progress: "
+      puts "#{man_drawing[@guessed.length]}#{@display}\nLetters guessed incorrectly: #{@guessed.join(" ")}\nGuesses remaining: #{6-@guessed.length}\nGuess a letter OR type 'save' to save your progress: "
       guess = gets.chomp
     
       if guess.downcase == "save"
